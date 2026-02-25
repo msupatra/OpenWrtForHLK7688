@@ -21,3 +21,15 @@
 
 # แก้ไขไฟล์ DTS ของ HLK-7688A เพื่อเปิดใช้งาน SPI
 sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+
+# สั่งให้ระบบเปิดใช้งาน SPI โดยตรงในไฟล์ DTS ของ HLK-7688A
+sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+
+# เพิ่ม spidev เข้าไปใน node spi เพื่อให้เกิด /dev/spidev0.1 (สำหรับ CS1)
+sed -i '/status = "okay";/a \
+\
+	spidev@1 {\
+		compatible = "linux,spidev";\
+		reg = <1>;\
+		spi-max-frequency = <1000000>;\
+	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
