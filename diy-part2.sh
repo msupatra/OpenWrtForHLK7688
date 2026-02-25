@@ -33,3 +33,9 @@ sed -i '/status = "okay";/a \
 		reg = <1>;\
 		spi-max-frequency = <1000000>;\
 	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+
+# แก้ไขสถานะ SPI ให้เป็น okay
+sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+
+# เพิ่ม Node spidev เพื่อให้ใช้งานผ่าน /dev ได้
+sed -i '/spi0 {/,/};/ { /status = "okay";/a \	spidev@1 {\n		compatible = "linux,spidev";\n		reg = <1>;\n		spi-max-frequency = <1000000>;\n	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
