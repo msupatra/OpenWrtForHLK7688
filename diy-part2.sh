@@ -1,41 +1,4 @@
-#!/bin/bash
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2.sh
-# Description: OpenWrt DIY script part 2 (After Update feeds)
-#
-# Copyright (c) 2019-2024 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-
-# Modify default IP
-#sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
-
-# Modify default theme
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-
-# Modify hostname
-#sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
-
-# แก้ไขไฟล์ DTS ของ HLK-7688A เพื่อเปิดใช้งาน SPI
+# ลบบรรทัดที่ซ้ำซ้อนออกและใช้เพียงชุดนี้
 sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
 
-# สั่งให้ระบบเปิดใช้งาน SPI โดยตรงในไฟล์ DTS ของ HLK-7688A
-sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
-
-# เพิ่ม spidev เข้าไปใน node spi เพื่อให้เกิด /dev/spidev0.1 (สำหรับ CS1)
-sed -i '/status = "okay";/a \
-\
-	spidev@1 {\
-		compatible = "linux,spidev";\
-		reg = <1>;\
-		spi-max-frequency = <1000000>;\
-	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
-
-# แก้ไขสถานะ SPI ให้เป็น okay
-sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
-
-# เพิ่ม Node spidev เพื่อให้ใช้งานผ่าน /dev ได้
-sed -i '/spi0 {/,/};/ { /status = "okay";/a \	spidev@1 {\n		compatible = "linux,spidev";\n		reg = <1>;\n		spi-max-frequency = <1000000>;\n	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+sed -i '/spi0 {/,/};/ s/status = "okay";/status = "okay";\n\tspidev@1 {\n\t\tcompatible = "linux,spidev";\n\t\treg = <1>;\n\t\tspi-max-frequency = <1000000>;\n\t};/' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
