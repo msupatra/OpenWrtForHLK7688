@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# สร้างไฟล์ DTS ใหม่ทับตัวเดิม เพื่อเปิด SPI และแก้ปัญหาโครงสร้างไฟล์
+# สร้างไฟล์ DTS ใหม่แบบประหยัด ตัดส่วนที่อาจทำให้เกิด Compile Error ออก
 cat <<EOF > target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
 /dts-v1/;
 
@@ -39,7 +39,7 @@ cat <<EOF > target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
 };
 
 &ethernet {
-	mtd-mac-address = <&factory 0x28>;
+	status = "okay";
 };
 
 &wmac {
