@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# สร้างไฟล์ DTS ใหม่แบบประหยัด ตัดส่วนที่อาจทำให้เกิด Compile Error ออก
+# สร้างไฟล์ DTS ใหม่แบบ Minimal เพื่อให้ Build ผ่านและเปิดใช้งาน SPI ได้
 cat <<EOF > target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
 /dts-v1/;
 
