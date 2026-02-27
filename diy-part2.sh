@@ -1,13 +1,8 @@
 #!/bin/bash
 
-# 1. ค้นหาบรรทัด spi0 และเปลี่ยนสถานะจาก disabled เป็น okay ในไฟล์ DTS ของ HLK-7688A
-sed -i '/&spi0 {/,/status = "disabled";/ s/status = "disabled";/status = "okay";/' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+# 1. เปลี่ยนสถานะ spi0 จาก disabled เป็น okay
+sed -i 's/status = "disabled";/status = "okay";/g' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
 
-# 2. เพิ่มโหนด spidev@1 เข้าไปภายใต้ spi0 เพื่อให้เกิดไฟล์ /dev/spidev0.1
-# คำสั่งนี้จะแทรกโหนดก่อนปิดปีกกาของ &spi0
-sed -i '/&spi0 {/a \
-\	spidev@1 {\
-\		compatible = "linux,spidev";\
-\		reg = <1>;\
-\		spi-max-frequency = <1000000>;\
-\	};' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
+# 2. แก้ปัญหา Properties must precede subnodes โดยการแทรก spidev ไว้หลังสุดของก้อน spi0
+# เราจะหาบรรทัด 'status = "okay";' ที่อยู่ภายในโหนด spi0 แล้วแทนที่ด้วยตัวมันเองตามด้วย subnode
+sed -i '/&spi0 {/,/};/ s/status = "okay";/status = "okay";\n\n\tspidev@1 {\n\t\tcompatible = "linux,spidev";\n\t\treg = <1>;\n\t\tspi-max-frequency = <1000000>;\n\t};/' target/linux/ramips/dts/mt7628an_hilink_hlk-7688a.dts
